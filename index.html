@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>crisp-game-lib</title>
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height,
+    user-scalable=no, initial-scale=1, maximum-scale=1"
+    />
+    <script src="https://unpkg.com/sounds-some-sounds@3.0.0/build/index.js"></script>
+    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
+    <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
+    <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
+    <script src="https://unpkg.com/crisp-game-lib@1.1.0/docs/bundle.js"></script>
+
+<script>
+title = "";
+
+description = `
+`;
+
+characters = [
+`
+LLLLLL
+LyLLyL
+LyyyyL
+LyyyyL
+LLyyLL
+ LLLL 
+`,
+`
+   lll
+l lLyl
+ lLyLl
+ ryLl 
+lrrl  
+ll  l 
+`,
+`
+ Ly   
+cL y  
+cgggyc
+cL  y 
+ L y
+ Ly
+`,
+`
+  yy  
+ lyyl 
+ l  l 
+lrrrrl
+lrrrrl
+ llll 
+`,
+`
+    y 
+   yYy
+   Ly
+  L
+ l
+l
+`,];
+
+
+options = {};
+
+
+/**
+ * @typedef {{
+ * pos: Vector,
+ * }} Player
+ */
+
+/**
+ * @type { Player }
+ */
+ let player;
+ let enemy;
+ let action;
+
+ let colors = ["red", "blue", "green"];
+
+ let currentColor = colors[Math.floor(Math.random()*colors.length)];
+ let colorChange = 60;
+
+ let canAttack = true;
+
+ player = {
+    pos: vec(15, 91),
+    hbpos: vec(14, 86),
+    health: 3,
+    attackCD: 0
+};
+
+ enemy = {
+    pos: vec(82, 86),
+    hbpos: vec(83, 81),
+    health: 10,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    level: 1
+ };
+
+ action = {
+    pos: vec(50,60),
+    timer: 60,
+    timerpos: vec(50, 56)
+ }
+
+function changeColor(){
+  currentColor = colors[Math.floor(Math.random()*colors.length)];
+  colorChange = 30/(enemy.level*0.25);
+}
+
+function update() {
+  color("black");
+  char("a", 20, 20);
+  char("b", 20, 27);
+  char("c", 20, 34);
+  char("d", 20, 41);
+  char("e", 20, 48);
+
+
+  if (!ticks) {
+
+  }
+
+  if(input.isPressed){
+    if(canAttack) {
+      canAttack = false;
+      player.attackCD = 20;
+      if(currentColor == enemy.color){
+        enemy.health -= 1;
+      } else {
+        player.health -= 1;
+      }
+      changeColor();
+    }
+  }
+
+  if(enemy.health <= 0){
+    enemy.level += 1;
+    enemy.health = 10;
+    score += 1;
+  }
+
+  if(colorChange <= 0){
+    changeColor();
+  }
+
+colorChange -= 1;
+
+color("red");
+rect(enemy.hbpos, 10, 2);
+rect(player.hbpos, 10, 2);
+
+color("cyan");
+rect(player.pos, 8, 8);
+
+color(enemy.color);
+rect(enemy.pos, 11, 13);
+
+color(currentColor);
+rect(action.pos, 6, 6);
+rect(action.timerpos, colorChange/10, 2);  
+
+
+
+
+
+color("green");
+rect(enemy.hbpos, enemy.health, 2);
+rect(player.hbpos, player.health*10/3, 2);
+
+
+if(player.attackCD <= 0){
+  canAttack = true;
+} else {
+  player.attackCD -= 1;
+}
+
+if(player.health <= 0){
+  end("GAME OVER");
+}
+
+}
+
+addEventListener("load", onLoad);
+</script>
+
+  </head>
+  <body style="background: #ddd"></body>
+</html>
