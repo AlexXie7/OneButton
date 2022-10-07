@@ -142,6 +142,7 @@ function update() {
     enemy.level += 1;
     enemy.health = 10;
     score += 1;
+    enemy.color = colors[Math.floor(Math.random()*colors.length)];
   }
 
   if(colorChange <= 0){
